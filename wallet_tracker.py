@@ -1,13 +1,3 @@
-"""
-wallet_tracker.py
-Script sederhana untuk:
-- cek saldo native (ETH / Base / zkSync via RPC)
-- cek token balances & token transfers via Covalent API (lebih lengkap)
-- kirim notifikasi via Telegram (opsional)
-
-Konfigurasi via .env
-"""
-
 import os
 import time
 import requests
@@ -15,7 +5,8 @@ from decimal import Decimal
 from web3 import Web3
 from dotenv import load_dotenv
 
-fix: use load_dotenv override for fresh env values
+# Load .env (paksa override biar selalu update)
+load_dotenv(override=True)
 
 # Config from .env
 ETHEREUM_RPC = os.getenv("ETHEREUM_RPC")
@@ -27,14 +18,18 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 WALLET = os.getenv("WALLET_ADDRESS", "0x2e5392f3d727a5c0e5a2e4a3530c2254dbce205d")
-# normalize
+# Normalisasi address agar sesuai checksum
 WALLET = Web3.to_checksum_address(WALLET)
 
-# Setup Web3 clients (only if RPC provided)
+# Setup Web3 clients (hanya kalau RPC tersedia)
 w3_eth = Web3(Web3.HTTPProvider(ETHEREUM_RPC)) if ETHEREUM_RPC else None
 w3_base = Web3(Web3.HTTPProvider(BASE_RPC)) if BASE_RPC else None
 w3_zksync = Web3(Web3.HTTPProvider(ZKSYNC_RPC)) if ZKSYNC_RPC else None
 
+
+def from_wei(value_wei, decimals=18):
+    """Konversi dari Wei ke Decimal ETH"""
+    return Decimal(value_wei) / (Decimal(10) ** decimals)
 def from_wei(value_wei, decimals=18):
     return Decimal(value_wei) / (Decimal(10) ** decimals)
 
