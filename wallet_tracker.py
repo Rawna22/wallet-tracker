@@ -15,7 +15,8 @@ from decimal import Decimal
 from web3 import Web3
 from dotenv import load_dotenv
 
-load_dotenv()
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 # Config from .env
 ETHEREUM_RPC = os.getenv("ETHEREUM_RPC")
