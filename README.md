@@ -21,12 +21,14 @@ Bisa dijalankan manual atau otomatis lewat **GitHub Actions**, serta mendukung n
 git clone https://github.com/Rawna22/wallet-tracker.git
 cd wallet-tracker
 pip install -r requirements.txt
+```
 
 ---
 
 ## 🔑 Konfigurasi .env
 Buat file .env di root folder repo (⚠️ jangan dipush ke GitHub).
 
+```bash
 ⚡ RPC endpoints
 
 ETHEREUM_RPC=https://mainnet.infura.io/v3/YOUR_INFURA_KEY
@@ -37,8 +39,11 @@ COVALENT_API_KEY=ckey_xxxxxxxxxxxxxxxxxxxxx
 
 WALLET_ADDRESS=
 
+```
 ---
 
 ## ▶️ Cara Menjalankan
 
+```bash
 python wallet_tracker.py
+```
