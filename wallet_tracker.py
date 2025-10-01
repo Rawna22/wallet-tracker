@@ -1,14 +1,14 @@
 import os
 import requests
 from decimal import Decimal
+from web3 import Web3
+from dotenv import load_dotenv
 
 # --- Config dari environment ---
 COVALENT_API_KEY = os.getenv("COVALENT_API_KEY", "")
 WALLET_ADDRESS   = os.getenv("WALLET_ADDRESS", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID   = os.getenv("TELEGRAM_CHAT_ID", "")
-from web3 import Web3
-from dotenv import load_dotenv
 
 # Load .env (paksa override biar selalu update)
 load_dotenv(override=True)
