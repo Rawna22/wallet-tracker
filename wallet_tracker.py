@@ -128,6 +128,10 @@ if __name__ == "__main__":
         top_n=10
     )
 
+token_msg = build_tokens_message_multi_chain(
+    WALLET_ADDRESS, COVALENT_API_KEY, ENABLED_CHAINS, top_n=10
+)
+
     final_msg = token_msg
 print(final_msg)
 send_telegram_markdown(final_msg)
