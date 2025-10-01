@@ -253,3 +253,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+# misalnya sudah bikin text dari hasil loop multi-chain
+text = "💼 Wallet summary ..."
+
+# gunakan text, bukan message
+final_msg = text
+send_to_telegram(final_msg)
