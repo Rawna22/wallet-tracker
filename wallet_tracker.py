@@ -17,6 +17,94 @@ COVALENT_CHAIN_IDS = {
     "Fantom": 250,
 }
 
+def _dec(x):
+    try:
+        return Decimal(str(x))
+    except Exception:
+        return Decimal(0)
+
+def fetch_top_tokens_covalent(chain_name: str, wallet: str, api_key: str, top_n: int = 10):
+    """
+    Ambil top N token (berdasarkan USD value) untuk 1 wallet di 1 chain via Covalent.
+    Return: list[{"symbol","name","amount","usd"}]
+    """
+    cid = COVALENT_CHAIN_IDS.get(chain_name)
+    if not (cid and api_key and wallet):
+        return []
+
+    url = f"https://api.covalenthq.com/v1/{cid}/address/{wallet}/balances_v2/"
+    try:
+        r = requests.get(url, params={"key": api_key, "nft": False}, timeout=25)
+    except Exception:
+        return []
+    if r.status_code != 200:
+        return []
+
+    items = (r.json() or {}).get("data", {}).get("items", []) or []
+    rows = []
+    for it in items:
+        # skip NFT
+        if it.get("type") == "nft":
+            continue
+        decimals = int(it.get("contract_decimals") or 18)
+        raw = _dec(it.get("balance"))
+        amt = raw / (Decimal(10) ** decimals) if decimals else raw
+        px  = _dec(it.get("quote_rate"))
+        usd = (amt * px) if px else None
+
+        rows.append({
+            "symbol": (it.get("contract_ticker_symbol") or "?").upper(),
+            "name": it.get("contract_name") or "",
+            "amount": amt,
+            "usd": usd if usd is not None else Decimal(0),
+        })
+
+    # urutkan berdasarkan USD tertinggi
+    rows.sort(key=lambda x: x["usd"], reverse=True)
+    return rows[:top_n]
+
+# --- Params dari ENV ---
+COVALENT_API_KEY = os.getenv("COVALENT_API_KEY", "")
+WALLET_ADDRESS   = os.getenv("WALLET_ADDRESS", "")
+# Pilih chain mana yang mau dimasukkan (default Ethereum,Base,Optimism,zkSync)
+ENABLED_CHAINS = [
+    c.strip() for c in (os.getenv("COVALENT_CHAINS", "Ethereum,Base,Optimism,zkSync").split(","))
+    if c.strip() in COVALENT_CHAIN_IDS
+]
+
+# ... (setelah kamu sudah bikin 'message' native balance)
+tokens_msg = ""
+if COVALENT_API_KEY and WALLET_ADDRESS:
+    tokens_msg = build_tokens_message_multi_chain(
+        WALLET_ADDRESS,
+        COVALENT_API_KEY,
+        ENABLED_CHAINS,
+        top_n=10,  # bisa diatur
+    )
+
+final_msg = message  # message kamu yang lama (native balance / ringkasan lain)
+if tokens_msg:
+    final_msg += "\n\n" + tokens_msg
+
+# --- kirim Telegram (pastikan pakai parse_mode Markdown) ---
+def send_telegram_markdown(text: str):
+    if not (TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID):
+        return
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    # split bila > 4096
+    chunks = []
+    while len(text) > 4096:
+        cut = text.rfind("\n", 0, 4000)
+        if cut <= 0: cut = 4000
+        chunks.append(text[:cut])
+        text = text[cut:]
+    chunks.append(text)
+    for part in chunks:
+        requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": part, "parse_mode": "Markdown"})
+
+send_telegram_markdown(final_msg)
+print(final_msg)
+
 # --- Config dari environment ---
 COVALENT_API_KEY = os.getenv("COVALENT_API_KEY", "")
 WALLET_ADDRESS   = os.getenv("WALLET_ADDRESS", "")
