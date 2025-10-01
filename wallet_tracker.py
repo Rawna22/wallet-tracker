@@ -109,7 +109,7 @@ def send_telegram_markdown(text: str):
         chunk = msg[:maxlen]
         # potong di newline kalau memungkinkan agar rapi
         if len(msg) > maxlen:
-            cut = chunk.rfind("\n")
+            cut = chunk.rfind("\n")  # <-- pakai kutip biasa
             if cut > 2000:
                 chunk = msg[:cut]
         requests.post(url, json={
@@ -120,7 +120,7 @@ def send_telegram_markdown(text: str):
         msg = msg[len(chunk):]
 
 if __name__ == "__main__":
-    # Bangun pesan utama dari token multi-chain
+    # Bangun pesan utama dari token multi-chain (cukup SEKALI)
     token_msg = build_tokens_message_multi_chain(
         WALLET_ADDRESS,
         COVALENT_API_KEY,
@@ -128,10 +128,6 @@ if __name__ == "__main__":
         top_n=10
     )
 
-token_msg = build_tokens_message_multi_chain(
-    WALLET_ADDRESS, COVALENT_API_KEY, ENABLED_CHAINS, top_n=10
-)
-
     final_msg = token_msg
-print(final_msg)
-send_telegram_markdown(final_msg)
+    print(final_msg)
+    send_telegram_markdown(final_msg)
