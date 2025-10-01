@@ -1,7 +1,3 @@
-# ===============================
-# Wallet Tracker (Multi-Chain + Telegram)
-# ===============================
-
 import os
 import requests
 from decimal import Decimal
@@ -15,12 +11,11 @@ COVALENT_CHAIN_IDS = {
     "Base": 8453,
     "Optimism": 10,
     "zkSync": 324,
-    # Tambahkan bila perlu:
-    # "Polygon": 137,
-    # "Arbitrum": 42161,
-    # "BSC": 56,
-    # "Avalanche": 43114,
-    # "Fantom": 250,
+    "Polygon": 137,
+    "Arbitrum": 42161,
+    "BSC": 56,
+    "Avalanche": 43114,
+    "Fantom": 250,
 }
 
 # --- ENV ---
