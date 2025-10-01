@@ -120,7 +120,6 @@ def send_telegram_markdown(text: str):
         msg = msg[len(chunk):]
 
 if __name__ == "__main__":
-    # Bangun pesan utama dari token multi-chain (cukup SEKALI)
     token_msg = build_tokens_message_multi_chain(
         WALLET_ADDRESS,
         COVALENT_API_KEY,
