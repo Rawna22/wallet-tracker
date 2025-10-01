@@ -128,6 +128,6 @@ if __name__ == "__main__":
         top_n=10
     )
 
-    final_msg = token_msg  # <- variabel yang jelas (bukan 'message')
-    print(final_msg)
-    send_telegram_markdown(final_msg)
+    final_msg = token_msg
+print(final_msg)
+send_telegram_markdown(final_msg)
