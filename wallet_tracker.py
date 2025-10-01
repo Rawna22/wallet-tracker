@@ -4,6 +4,19 @@ from decimal import Decimal
 from web3 import Web3
 from dotenv import load_dotenv
 
+# --- Konstanta Chain IDs Covalent ---
+COVALENT_CHAIN_IDS = {
+    "Ethereum": 1,
+    "Base": 8453,
+    "Optimism": 10,
+    "zkSync": 324,
+    "Polygon": 137,
+    "Arbitrum": 42161,
+    "BSC": 56,
+    "Avalanche": 43114,
+    "Fantom": 250,
+}
+
 # --- Config dari environment ---
 COVALENT_API_KEY = os.getenv("COVALENT_API_KEY", "")
 WALLET_ADDRESS   = os.getenv("WALLET_ADDRESS", "")
